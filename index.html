@@ -1,0 +1,63 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+	<script>
+	function loadsYouTube() {
+		pJson("http://gdata.youtube.com/feeds/api/videos", {
+			v: 2,
+			alt: "jsonc",
+			strict: true,
+			category: "Education",
+			"max-results": 25,
+			q: $("#keyword").val(),
+			format: 1,
+			"start-index": 1
+		}, function (d) {			
+			if (d != null) {
+				if (d.data.items != null) {
+					var c = d.data.items;					
+					$("#YouTube_tmpl").tmpl(c).appendTo("#thelistYT");					
+				} 
+			}
+		}, function () {
+			
+		});		
+	}
+	function pJson(url,data,success,error){
+		$.ajax({
+			url:url,
+			data:data,
+			dataType:"jsonp",
+			type:"GET",
+			success:success,
+			error:error,
+			cache:true
+		});
+	}
+	
+	$(document).ready(function(){
+		$("#search").click(function(){
+			loadsYouTube();
+		});
+	});
+	</script>
+</head>
+<body>
+	<input type="text" id="keyword" /> <button id="search">search</button>
+	
+	</br>
+	<script type="text/x-jquery-tmpl" id="YouTube_tmpl">
+    <li>
+        <img height="100px" width="100px" class="img" src="http://img.youtube.com/vi/${id}/0.jpg" contenttype="youtube" contentID="${id}" contentTitle="${title}" />
+        <div style="clear:both;"></div>
+        <span style="display: inline-block; margin-top: 16px;width:160px;word-wrap:break-word;height:44px;">${title}</span>
+        <div style="clear:both;"></div>
+        <span style="display: inline-block; margin-top: 10px;">${uploader}</span>
+        <div style="clear:both;"></div>        
+		<span style="display: inline-block; margin-top: 11px;width:160px;word-wrap:break-word;">${description}</span>
+    </li>
+    </script>
+	<ul id="thelistYT"></ul>
+</body>
+</html>
